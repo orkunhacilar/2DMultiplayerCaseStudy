@@ -9,11 +9,12 @@ public class PlayerController : NetworkBehaviour
     public int currentHealth;
     public HealthBar healthBar;
     public float moveSpeed = 5f; // Hareket hızı
-
+    
+    public static GameObject HostLoseScreen;
+    public static GameObject ClientLoseScreen;
+    
     private void Start()
     {
-        
-        
         currentHealth = maxHealth;
         healthBar.SetMaxHealth(maxHealth);
     }
@@ -25,7 +26,7 @@ public class PlayerController : NetworkBehaviour
         {
             return;
         }
-
+        
         // W, A, S, D tuşlarıyla hareket etme
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
@@ -57,23 +58,45 @@ public class PlayerController : NetworkBehaviour
     }
 
     
+    
+    
+    // Host kendi canını artırır
     [ServerRpc]
     public void HealCharServerRpc(int healHp)
     {
-        HealChar(healHp); // Sadece hostun canını artırmak için
+        if (IsServer) // Bu kontrol gereksiz çünkü ServerRpc sadece server tarafından çalıştırılabilir.
+        {
+            HealChar(healHp); // Hostun canını artırmak için
+        }
     }
 
-    [ClientRpc]
-    public void HealCharClientRpc(int healHp)
+    // Server üzerinden client'ın canını artırmak için
+    [ServerRpc]
+    public void RequestHealServerRpc(int healHp, ServerRpcParams serverRpcParams = default)
     {
-        HealChar(healHp); // Sadece yerel oyuncunun canını artırmak için
+        if (IsServer)
+        {
+            ulong clientId = serverRpcParams.Receive.SenderClientId;
+            HealCharClientRpc(healHp, new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new ulong[] { clientId } } });
+        }
     }
 
+    // Client kendi canını artırır
+    [ClientRpc]
+    public void HealCharClientRpc(int healHp, ClientRpcParams clientRpcParams = default)
+    {
+        if (IsClient) // Bu kontrol gereksiz çünkü ClientRpc sadece client tarafından çalıştırılabilir.
+        {
+            HealChar(healHp); // Yerel oyuncunun canını artırmak için
+        }
+    }
+
+    // Can artırma işlemi
     public void HealChar(int healHp)
     {
         Debug.Log("CAN DEGISTIRILIYOR.......");
         currentHealth += healHp;
         currentHealth = Mathf.Min(currentHealth, maxHealth); // Maksimum sağlık kontrolü
-        healthBar.SetHealth(currentHealth);
+        healthBar.SetHealth(currentHealth); // Sağlık barını güncelle
     }
 }

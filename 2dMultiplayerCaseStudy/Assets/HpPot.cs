@@ -22,7 +22,7 @@ public class HpPot : NetworkBehaviour
                 else // Eğer istemci ise
                 {
                     Debug.Log("Client icin can degistiriliyor....");
-                    player.HealCharClientRpc(healAmount);
+                    player.RequestHealServerRpc(healAmount);
                 }
             }
         }

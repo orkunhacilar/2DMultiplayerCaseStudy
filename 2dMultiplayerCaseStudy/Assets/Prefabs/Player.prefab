@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1149241694
+  GlobalObjectIdHash: 158859102
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -426,7 +426,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1149241694
+  GlobalObjectIdHash: 1631518294
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -451,6 +451,7 @@ MonoBehaviour:
   currentHealth: 0
   healthBar: {fileID: 7555959069953943673}
   moveSpeed: 5
+  LoseScreen: {fileID: 3974225465923976813, guid: 2618a5d2b576444b0aa72465e2ff2196, type: 3}
 --- !u!114 &4917018471877176745
 MonoBehaviour:
   m_ObjectHideFlags: 0
