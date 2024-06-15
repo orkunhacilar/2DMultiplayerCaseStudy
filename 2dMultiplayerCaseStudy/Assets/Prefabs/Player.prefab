@@ -452,11 +452,11 @@ MonoBehaviour:
   healthBar: {fileID: 7555959069953943673}
   moveSpeed: 5
   LoseScreen: {fileID: 3974225465923976813, guid: 2618a5d2b576444b0aa72465e2ff2196, type: 3}
-  SpawnPoints:
-  - {fileID: 7178643101793800029, guid: a1c2d6c65dd1c486c946033eedca7cc5, type: 3}
-  - {fileID: 299402746284383108, guid: 2f79498d3a0f8411ba1d10cafcb1b248, type: 3}
-  - {fileID: 8339734376825535874, guid: 4b8c425238e244441b84fcd2d780e8e5, type: 3}
-  enemyObject: {fileID: 332143686288294038, guid: 9627b5c6c51db4101b7a2480d7a90530, type: 3}
+  spawnPoints:
+  - {fileID: 3836463222185571968, guid: a1c2d6c65dd1c486c946033eedca7cc5, type: 3}
+  - {fileID: 7380918529769630596, guid: 2f79498d3a0f8411ba1d10cafcb1b248, type: 3}
+  - {fileID: 8637277869231199210, guid: 4b8c425238e244441b84fcd2d780e8e5, type: 3}
+  enemyPrefab: {fileID: 332143686288294038, guid: 9627b5c6c51db4101b7a2480d7a90530, type: 3}
 --- !u!114 &4917018471877176745
 MonoBehaviour:
   m_ObjectHideFlags: 0

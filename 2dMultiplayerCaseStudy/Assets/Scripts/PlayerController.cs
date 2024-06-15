@@ -18,8 +18,8 @@ public class PlayerController : NetworkBehaviour
     
     public GameObject LoseScreen;
 
-    public List<GameObject> SpawnPoints;
-    public GameObject enemyObject;
+    public List<Transform> spawnPoints;
+    public GameObject enemyPrefab;
     
     private int repeatCount = 3; // Toplam kaç kez tekrarlanacağı
     private int currentRepeat = 0; // Şu an hangi tekrarda olduğumuzu tutar
@@ -30,7 +30,10 @@ public class PlayerController : NetworkBehaviour
         currentHealth = maxHealth;
         healthBar.SetMaxHealth(maxHealth);
         
-        StartCoroutine(RepeatEnemyMethod()); //TASK 8 Lets check Task8RandomEnemySpawn Region
+        if (IsServer) // sadece server tarafında çalıştır
+        {
+            StartCoroutine(RepeatEnemyMethod());
+        }
     }
 
     #region Task8RandomEnemySpawn
@@ -41,10 +44,9 @@ public class PlayerController : NetworkBehaviour
         {
             Debug.Log("Metod Çağrıldı - Tekrar: " + (currentRepeat + 1));
 
-            
-            SpawnEnemy(); //Enemyleri spawn eden metod
+            SpawnEnemyServerRpc();
 
-            yield return new WaitForSeconds(1f); // 1 saniye bekle
+            yield return new WaitForSeconds(20f); // 20 saniye bekle
 
             currentRepeat++; // Tekrar sayısını artır
         }
@@ -54,32 +56,29 @@ public class PlayerController : NetworkBehaviour
     
     
     //SpawnEnemyMethod
-    public void SpawnEnemy()
+    [ServerRpc] // bu metod sadece server tarafından çağrılır
+    public void SpawnEnemyServerRpc()
     {
-        Transform spawnPoint = GetAndRemoveRandomSpawnPoint().transform;
-        enemyObject.transform.position = spawnPoint.position;
-        enemyObject.transform.rotation = spawnPoint.rotation;
-        Instantiate(enemyObject);
+        Transform spawnPoint = GetAndRemoveRandomSpawnPoint();
+        if (spawnPoint != null)
+        {
+            GameObject enemy = Instantiate(enemyPrefab, spawnPoint.position, spawnPoint.rotation);
+            NetworkObject networkObject = enemy.GetComponent<NetworkObject>();
+            networkObject.Spawn(); // enemy'i network üzerinden spawn et
+        }
     }
     
-    GameObject GetAndRemoveRandomSpawnPoint() // random bir point aldim ve kaldirdim..
+    Transform GetAndRemoveRandomSpawnPoint()
     {
-        // Eğer SpawnPoints listesi boşsa null döndür
-        if (SpawnPoints.Count == 0)
+        if (spawnPoints.Count == 0)
         {
             Debug.LogWarning("SpawnPoints listesi boş!");
             return null;
         }
 
-        // Rastgele bir index seç
-        int randomIndex = Random.Range(0, SpawnPoints.Count);
-
-        // Seçilen spawn noktasını al
-        GameObject selectedSpawnPoint = SpawnPoints[randomIndex];
-
-        // Seçilen spawn noktasını listeden kaldır
-        SpawnPoints.RemoveAt(randomIndex);
-
+        int randomIndex = Random.Range(0, spawnPoints.Count);
+        Transform selectedSpawnPoint = spawnPoints[randomIndex];
+        spawnPoints.RemoveAt(randomIndex);
         return selectedSpawnPoint;
     }
 

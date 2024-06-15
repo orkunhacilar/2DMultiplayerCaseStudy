@@ -1095,12 +1095,20 @@ PrefabInstance:
       value: Map
       objectReference: {fileID: 0}
     - target: {fileID: 5302461917250164687, guid: c0be1e0317c704250bce8864a7ebffc3, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.6228884
+      objectReference: {fileID: 0}
+    - target: {fileID: 5302461917250164687, guid: c0be1e0317c704250bce8864a7ebffc3, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.6641427
+      objectReference: {fileID: 0}
+    - target: {fileID: 5302461917250164687, guid: c0be1e0317c704250bce8864a7ebffc3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -0.0349
       objectReference: {fileID: 0}
     - target: {fileID: 5302461917250164687, guid: c0be1e0317c704250bce8864a7ebffc3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5302461917250164687, guid: c0be1e0317c704250bce8864a7ebffc3, type: 3}
       propertyPath: m_LocalPosition.z
