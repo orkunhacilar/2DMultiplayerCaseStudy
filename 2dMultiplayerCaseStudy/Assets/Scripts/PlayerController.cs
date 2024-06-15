@@ -10,8 +10,10 @@ public class PlayerController : NetworkBehaviour
     public HealthBar healthBar;
     public float moveSpeed = 5f; // Hareket hızı
     
-    public static GameObject HostLoseScreen;
-    public static GameObject ClientLoseScreen;
+    private bool hasLost = false;
+    
+    public GameObject LoseScreen;
+   
     
     private void Start()
     {
@@ -41,7 +43,26 @@ public class PlayerController : NetworkBehaviour
         {
             TakeDamage(20);
         }
+        
+        
+        if (currentHealth <= 0 && !hasLost)
+        {
+            hasLost = true;
+            ShowLoseScreen();
+        }
+        
     }
+    
+    // Kaybetme ekranını gösterme işlemi
+    private void ShowLoseScreen()
+    {
+        if (IsLocalPlayer) // Sadece yerel oyuncu için göster
+        {
+            Instantiate(LoseScreen);
+        }
+    }
+    
+    
     
     public void OnCollisionEnter2D(Collision2D other)
     {
@@ -57,9 +78,9 @@ public class PlayerController : NetworkBehaviour
         healthBar.SetHealth(currentHealth);
     }
 
-    
-    
-    
+
+    #region HealthMethods
+
     // Host kendi canını artırır
     [ServerRpc]
     public void HealCharServerRpc(int healHp)
@@ -70,6 +91,9 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    // ServerRpcParams, hangi istemcinin bu isteği gönderdiğini belirler ve SenderClientId ile bu istemciyi tespit eder.
+    // ClientRpcParams, belirli istemcilere gönderilecek RPC çağrılarını yapılandırmak için kullanılır. Bu durumda sadece belirli bir istemciye gönderilecek.
+    
     // Server üzerinden client'ın canını artırmak için
     [ServerRpc]
     public void RequestHealServerRpc(int healHp, ServerRpcParams serverRpcParams = default)
@@ -99,4 +123,8 @@ public class PlayerController : NetworkBehaviour
         currentHealth = Mathf.Min(currentHealth, maxHealth); // Maksimum sağlık kontrolü
         healthBar.SetHealth(currentHealth); // Sağlık barını güncelle
     }
+
+    #endregion
+    
+    
 }
