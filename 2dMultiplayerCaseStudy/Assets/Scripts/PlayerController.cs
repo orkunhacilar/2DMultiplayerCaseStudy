@@ -1,9 +1,13 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.UI;
 
 public class PlayerController : NetworkBehaviour
 {
+    
+    //Zamanım olsaydı şu CurrentHealth variableını NetworkVarıable olarak yaratıp denemek isterdim.
     
     public int maxHealth = 100;
     public int currentHealth;
@@ -13,14 +17,74 @@ public class PlayerController : NetworkBehaviour
     private bool hasLost = false;
     
     public GameObject LoseScreen;
+
+    public List<GameObject> SpawnPoints;
+    public GameObject enemyObject;
+    
+    private int repeatCount = 3; // Toplam kaç kez tekrarlanacağı
+    private int currentRepeat = 0; // Şu an hangi tekrarda olduğumuzu tutar
    
     
     private void Start()
     {
         currentHealth = maxHealth;
         healthBar.SetMaxHealth(maxHealth);
+        
+        StartCoroutine(RepeatEnemyMethod()); //TASK 8 Lets check Task8RandomEnemySpawn Region
     }
 
+    #region Task8RandomEnemySpawn
+
+    IEnumerator RepeatEnemyMethod()
+    {
+        while (currentRepeat < repeatCount)
+        {
+            Debug.Log("Metod Çağrıldı - Tekrar: " + (currentRepeat + 1));
+
+            
+            SpawnEnemy(); //Enemyleri spawn eden metod
+
+            yield return new WaitForSeconds(1f); // 1 saniye bekle
+
+            currentRepeat++; // Tekrar sayısını artır
+        }
+
+        Debug.Log("İşlem tamamlandı.");
+    }
+    
+    
+    //SpawnEnemyMethod
+    public void SpawnEnemy()
+    {
+        Transform spawnPoint = GetAndRemoveRandomSpawnPoint().transform;
+        enemyObject.transform.position = spawnPoint.position;
+        enemyObject.transform.rotation = spawnPoint.rotation;
+        Instantiate(enemyObject);
+    }
+    
+    GameObject GetAndRemoveRandomSpawnPoint() // random bir point aldim ve kaldirdim..
+    {
+        // Eğer SpawnPoints listesi boşsa null döndür
+        if (SpawnPoints.Count == 0)
+        {
+            Debug.LogWarning("SpawnPoints listesi boş!");
+            return null;
+        }
+
+        // Rastgele bir index seç
+        int randomIndex = Random.Range(0, SpawnPoints.Count);
+
+        // Seçilen spawn noktasını al
+        GameObject selectedSpawnPoint = SpawnPoints[randomIndex];
+
+        // Seçilen spawn noktasını listeden kaldır
+        SpawnPoints.RemoveAt(randomIndex);
+
+        return selectedSpawnPoint;
+    }
+
+        #endregion
+        
     // Update her frame'de çağrılır
     void Update()
     {
@@ -53,6 +117,9 @@ public class PlayerController : NetworkBehaviour
         
     }
     
+    
+    
+    
     // Kaybetme ekranını gösterme işlemi
     private void ShowLoseScreen()
     {
@@ -77,6 +144,11 @@ public class PlayerController : NetworkBehaviour
         currentHealth -= damage;
         healthBar.SetHealth(currentHealth);
     }
+    
+    
+    
+    
+   
 
 
     #region HealthMethods
